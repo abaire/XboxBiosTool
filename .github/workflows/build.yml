@@ -40,11 +40,15 @@ jobs:
       - name: Test
         run: |
           ctest --test-dir build --output-on-failure
+      - name: Create archive
+        run: |
+          mv build xbox_bios_tool
+          zip xbox_bios_tool_linux.zip xbox_bios_tool/xbox_bios_tool
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: xbox_bios_tool_linux
-          path: build/xbox_bios_tool
+          path: xbox_bios_tool_linux.zip
 
   BuildMacOS:
     name: Build macOS
@@ -69,11 +73,15 @@ jobs:
       - name: Test
         run: |
           ctest --test-dir build --output-on-failure
+      - name: Create archive
+        run: |
+          mv build xbox_bios_tool
+          zip xbox_bios_tool_macos.zip xbox_bios_tool/xbox_bios_tool
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: xbox_bios_tool_macos
-          path: build/xbox_bios_tool
+          path: xbox_bios_tool_macos.zip
 
   BuildWindows:
     runs-on: windows-latest
@@ -85,9 +93,60 @@ jobs:
         uses: microsoft/setup-msbuild@v2.0.0
       - name: Build solution
         run: msbuild vc/XboxBiosTools.sln /p:Configuration=Release
+      - name: Create archive
+        run: |
+          Rename-Item -Path "bin" -NewName "xbox_bios_tool"
+          Compress-Archive -Path "xbox_bios_tool" -DestinationPath "xbox_bios_tool_win64.zip"
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
           name: xbox_bios_tool_win64
-          path: |
-            bin
+          path: xbox_bios_tool_win64.zip
+
+
+  CreateRelease:
+    needs: [ BuildLinux, BuildMacOS, BuildWindows ]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone tree
+        uses: actions/checkout@v4
+        with:
+          path: xbox_bios_tool
+
+      - name: Calculate version
+        id: calculate-version
+        run: |
+          echo "version=$(date +'%Y-%m-%d_%H-%M-%S-%N')" >> $GITHUB_OUTPUT
+
+      - name: Create tag
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v6.2
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          custom_tag: ${{ steps.calculate-version.outputs.version }}
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: xbox_bios_tool_linux
+          path: ./release_artifacts
+      - uses: actions/download-artifact@v4
+        with:
+          name: xbox_bios_tool_macos
+          path: ./release_artifacts
+      - uses: actions/download-artifact@v4
+        with:
+          name: xbox_bios_tool_win64
+          path: ./release_artifacts
+
+      - name: Create release
+        uses: softprops/action-gh-release@v2.2.2
+        with:
+          tag_name: ${{ steps.tag_version.outputs.new_tag }}
+          name: "XboxBiosTool ${{ steps.tag_version.outputs.new_version }}"
+          prerelease: false
+          draft: false
+          files: |
+            xbox_bios_tool/LICENSE
+            xbox_bios_tool/notes.txt
+            release_artifacts/*
