@@ -91,3 +91,51 @@ jobs:
           name: xbox_bios_tool_win64
           path: |
             bin
+
+
+  CreateRelease:
+    needs: [ BuildLinux, BuildMacOS, BuildWindows ]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone tree
+        uses: actions/checkout@v4
+        with:
+          path: xbox_bios_tool
+
+      - name: Calculate version
+        id: calculate-version
+        run: |
+          echo "version=$(date +'%Y-%m-%d_%H-%M-%S-%N')" >> $GITHUB_OUTPUT
+
+      - name: Create tag
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v6.2
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          custom_tag: ${{ steps.calculate-version.outputs.version }}
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: xbox_bios_tool_linux
+          path: ./release_artifacts/linux
+      - uses: actions/download-artifact@v4
+        with:
+          name: xbox_bios_tool_macos
+          path: ./release_artifacts/macOS
+      - uses: actions/download-artifact@v4
+        with:
+          name: xbox_bios_tool_win64
+          path: ./release_artifacts/windows
+
+      - name: Create release
+        uses: softprops/action-gh-release@v2.2.2
+        with:
+          tag_name: ${{ steps.tag_version.outputs.new_tag }}
+          name: "XboxBiosTool ${{ steps.tag_version.outputs.new_version }}"
+          prerelease: false
+          draft: false
+          files: |
+            xbox_bios_tool/LICENSE
+            xbox_bios_tool/notes.txt
+            release_artifacts/*
