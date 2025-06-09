@@ -1,4 +1,5 @@
-// util.h: implements various utility functions for manipulating strings, printing to console, changing console foreground color, size checking, etc.
+// util.h: implements various utility functions for manipulating strings,
+// printing to console, changing console foreground color, size checking, etc.
 
 /* Copyright(C) 2024 tommojphillips
  *
@@ -14,7 +15,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.If not, see < https://www.gnu.org/licenses/>.
-*/
+ */
 
 // Author: tommojphillips
 // GitHub: https:\\github.com\tommojphillips
@@ -25,10 +26,14 @@
 #include <stdint.h>
 
 // pointer-of-struct bounds check
-#define IN_BOUNDS(struc, buff, size) ((uint8_t*)struc >= (uint8_t*)buff && (uint8_t*)struc + sizeof(*struc) < (uint8_t*)buff + size)
+#define IN_BOUNDS(struc, buff, size)    \
+  ((uint8_t*)struc >= (uint8_t*)buff && \
+   (uint8_t*)struc + sizeof(*struc) < (uint8_t*)buff + size)
 
 // pointer-of-block bounds check
-#define IN_BOUNDS_BLOCK(block, blockSize, buff, buffSize) ((uint8_t*)block >= (uint8_t*)buff && (uint8_t*)block + blockSize < (uint8_t*)buff + buffSize)
+#define IN_BOUNDS_BLOCK(block, blockSize, buff, buffSize) \
+  ((uint8_t*)block >= (uint8_t*)buff &&                   \
+   (uint8_t*)block + blockSize < (uint8_t*)buff + buffSize)
 
 // console colors
 #define CONSOLE_COLOR_ERR 0
@@ -83,10 +88,11 @@ void uprinta(const uint8_t* data, const size_t size, const int new_line);
 // data: buffer
 // size: buffer size
 // per_line: num of hex digits per line. eg 16. -> xx xx xx xx ... x16
-void uprinthl(const uint8_t* data, const size_t size, uint32_t per_line, const char* prefix, const int ascii);
+void uprinthl(const uint8_t* data, const size_t size, uint32_t per_line,
+              const char* prefix, const int ascii);
 
 #ifdef __cplusplus
 };
 #endif
 
-#endif //UTIL_H
+#endif  // UTIL_H

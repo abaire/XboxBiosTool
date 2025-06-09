@@ -14,7 +14,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.If not, see < https://www.gnu.org/licenses/>.
-*/
+ */
 
 // Author: tommojphillips
 // GitHub: https:\\github.com\tommojphillips
@@ -32,20 +32,17 @@
 
 #define XB_BIOS_TOOL_AUTHOR_STR "tommojphillips"
 
-#define XB_BIOS_TOOL_VER \
-		XB_BIOS_TOOL_VER_MAJOR, \
-		XB_BIOS_TOOL_VER_MINOR, \
-		XB_BIOS_TOOL_VER_PATCH, \
-		XB_BIOS_TOOL_VER_BUILD
+#define XB_BIOS_TOOL_VER                                                  \
+  XB_BIOS_TOOL_VER_MAJOR, XB_BIOS_TOOL_VER_MINOR, XB_BIOS_TOOL_VER_PATCH, \
+      XB_BIOS_TOOL_VER_BUILD
 
-#define XB_BIOS_TOOL_VER_STR \
-		STR(XB_BIOS_TOOL_VER_MAJOR) "." \
-		STR(XB_BIOS_TOOL_VER_MINOR) "." \
-		STR(XB_BIOS_TOOL_VER_PATCH) "." \
-		STR(XB_BIOS_TOOL_VER_BUILD)
+#define XB_BIOS_TOOL_VER_STR                                               \
+  STR(XB_BIOS_TOOL_VER_MAJOR)                                              \
+  "." STR(XB_BIOS_TOOL_VER_MINOR) "." STR(XB_BIOS_TOOL_VER_PATCH) "." STR( \
+      XB_BIOS_TOOL_VER_BUILD)
 
-#define XB_BIOS_TOOL_NAME_STR	"Xbox Bios Tools v" \
-								XB_BIOS_TOOL_VER_STR " Copyright (c) 2024 " \
-								XB_BIOS_TOOL_AUTHOR_STR
+#define XB_BIOS_TOOL_NAME_STR              \
+  "Xbox Bios Tools v" XB_BIOS_TOOL_VER_STR \
+  " Copyright (c) 2024 " XB_BIOS_TOOL_AUTHOR_STR
 
-#endif // !XB_BIOS_TOOL_VERSION_H
+#endif  // !XB_BIOS_TOOL_VERSION_H

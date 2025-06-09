@@ -14,7 +14,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.If not, see < https://www.gnu.org/licenses/>.
-*/
+ */
 
 // Author: tommojphillips
 // GitHub: https:\\github.com\tommojphillips
@@ -26,30 +26,30 @@
 #include <stdio.h>
 
 typedef enum {
-	LOADINI_SETTING_TYPE_STR,
-	LOADINI_SETTING_TYPE_BOOL
+  LOADINI_SETTING_TYPE_STR,
+  LOADINI_SETTING_TYPE_BOOL
 } LOADINI_SETTING_TYPE;
 
 enum {
-	LOADINI_ERROR_SUCCESS = 0,
-	LOADINI_ERROR_INVALID_DATA = 1,
-	LOADINI_ERROR_INVALID_KEY = 2
+  LOADINI_ERROR_SUCCESS = 0,
+  LOADINI_ERROR_INVALID_DATA = 1,
+  LOADINI_ERROR_INVALID_KEY = 2
 };
 
 typedef struct {
-	const char* key;
-	const LOADINI_SETTING_TYPE type;
+  const char* key;
+  const LOADINI_SETTING_TYPE type;
 } LOADINI_SETTING;
 
 typedef struct {
-	const LOADINI_SETTING* s;
-	void* var;
+  const LOADINI_SETTING* s;
+  void* var;
 } LOADINI_SETTING_MAP;
 
 typedef struct {
-	const LOADINI_SETTING* s;
-	const uint32_t size;
-	const uint32_t count;
+  const LOADINI_SETTING* s;
+  const uint32_t size;
+  const uint32_t count;
 } LOADINI_RETURN_MAP;
 
 #ifdef __cplusplus
@@ -61,10 +61,11 @@ extern "C" {
 // settings_map: map of settings
 // map_size: size of the map
 // returns LOADINI_ERROR_CODE
-int loadini(FILE* stream, const LOADINI_SETTING_MAP* settings_map, uint32_t map_size);
+int loadini(FILE* stream, const LOADINI_SETTING_MAP* settings_map,
+            uint32_t map_size);
 
 #ifdef __cplusplus
 };
 #endif
 
-#endif // !LOAD_INI_H
+#endif  // !LOAD_INI_H

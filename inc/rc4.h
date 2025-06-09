@@ -14,7 +14,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.If not, see < https://www.gnu.org/licenses/>.
-*/
+ */
 
 // Author: tommojphillips
 // GitHub: https:\\github.com\tommojphillips
@@ -26,10 +26,10 @@
 #include <stdint.h>
 
 typedef struct _RC4_CONTEXT {
-    uint8_t k;
-    uint8_t j;
-    uint8_t t;
-    uint8_t s[256];
+  uint8_t k;
+  uint8_t j;
+  uint8_t t;
+  uint8_t s[256];
 } RC4_CONTEXT;
 
 #ifdef __cplusplus
@@ -38,10 +38,11 @@ extern "C" {
 
 void rc4_key(RC4_CONTEXT* context, const uint8_t* key, const size_t len);
 void rc4(RC4_CONTEXT* context, uint8_t* data, const size_t size);
-void rc4_symmetric_enc_dec(uint8_t* data, const size_t size, const uint8_t* key, const size_t key_len);
+void rc4_symmetric_enc_dec(uint8_t* data, const size_t size, const uint8_t* key,
+                           const size_t key_len);
 
 #ifdef __cplusplus
 };
 #endif
 
-#endif // _RC4_H
+#endif  // _RC4_H

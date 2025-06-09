@@ -32,9 +32,11 @@ extern "C" {
 // read a file. allocates memory for the buffer.
 // filename: the absolute path to the file.
 // bytesRead: if not NULL, will store the number of bytes read.
-// expectedSize: if not -1, will check the file size against this value and return NULL if they don't match.
-// returns the buffer if successful, NULL otherwise.
-uint8_t* readFile(const char* filename, uint32_t* bytesRead, const uint32_t expectedSize);
+// expectedSize: if not -1, will check the file size against this value and
+// return NULL if they don't match. returns the buffer if successful, NULL
+// otherwise.
+uint8_t* readFile(const char* filename, uint32_t* bytesRead,
+                  const uint32_t expectedSize);
 
 // write to a file.
 // filename: the absolute path to the file.
@@ -44,7 +46,8 @@ uint8_t* readFile(const char* filename, uint32_t* bytesRead, const uint32_t expe
 int writeFile(const char* filename, void* ptr, const uint32_t bytesToWrite);
 
 // write to a file.
-int writeFileF(const char* filename, const char* tag, void* ptr, const uint32_t bytesToWrite);
+int writeFileF(const char* filename, const char* tag, void* ptr,
+               const uint32_t bytesToWrite);
 
 // check if file exists.
 bool fileExists(const char* filename);

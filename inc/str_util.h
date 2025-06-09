@@ -14,7 +14,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.If not, see < https://www.gnu.org/licenses/>.
-*/
+ */
 
 // Author: tommojphillips
 // GitHub: https:\\github.com\tommojphillips
@@ -39,4 +39,4 @@ void rpad(char* str, const int buffSize, const char pad);
 };
 #endif
 
-#endif // !STR_UTIL_H
+#endif  // !STR_UTIL_H

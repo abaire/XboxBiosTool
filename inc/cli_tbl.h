@@ -14,18 +14,19 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.If not, see < https://www.gnu.org/licenses/>.
-*/
+ */
 
 // Author: tommojphillips
 // GitHub: https:\\github.com\tommojphillips
 
 // How to use:
-// define a command table (CMD_TBL) and parameter table (PARAM_TBL) in your source file.
-// define enums, CLI_COMMAND and CLI_SWITCH, for the command and switch types in your source file.
-// first element in the enum should represent no command or switch.
-// call parseCli() passing in the command line arguments, and tables.
-// set the command and parameter values based on the command line arguments.
-// update the switch flags based and cmd ptr based on the command line arguments.
+// define a command table (CMD_TBL) and parameter table (PARAM_TBL) in your
+// source file. define enums, CLI_COMMAND and CLI_SWITCH, for the command and
+// switch types in your source file. first element in the enum should represent
+// no command or switch. call parseCli() passing in the command line arguments,
+// and tables. set the command and parameter values based on the command line
+// arguments. update the switch flags based and cmd ptr based on the command
+// line arguments.
 
 #ifndef CLI_TBL_H
 #define CLI_TBL_H
@@ -41,7 +42,8 @@
 #endif
 
 #define CLI_SWITCH_BITS (sizeof(int) * 8)
-#define CLI_SWITCH_SIZE ((CLI_SWITCH_MAX_COUNT + CLI_SWITCH_BITS - 1) / CLI_SWITCH_BITS)
+#define CLI_SWITCH_SIZE \
+  ((CLI_SWITCH_MAX_COUNT + CLI_SWITCH_BITS - 1) / CLI_SWITCH_BITS)
 
 typedef unsigned char CLI_SWITCH;
 typedef unsigned char CLI_COMMAND;
@@ -55,32 +57,32 @@ const CLI_COMMAND CMD_HELP = (CLI_COMMAND)1;
 #define CLI_SWITCH_START_INDEX 2
 
 enum CLI_CMD_ERROR : int {
-	CLI_SUCCESS = 0,
+  CLI_SUCCESS = 0,
 
-	CLI_ERROR_NO_CMD,
-	CLI_ERROR_INVALID_CMD,
-	CLI_ERROR_UNKNOWN_CMD,
+  CLI_ERROR_NO_CMD,
+  CLI_ERROR_INVALID_CMD,
+  CLI_ERROR_UNKNOWN_CMD,
 
-	CLI_ERROR_MISSING_SW,
-	CLI_ERROR_INVALID_SW,
-	CLI_ERROR_UNKNOWN_SW,
-	
-	CLI_ERROR_MISSING_ARG,
-	CLI_ERROR_INVALID_ARG,
+  CLI_ERROR_MISSING_SW,
+  CLI_ERROR_INVALID_SW,
+  CLI_ERROR_UNKNOWN_SW,
+
+  CLI_ERROR_MISSING_ARG,
+  CLI_ERROR_INVALID_ARG,
 };
 
 typedef struct {
-	const char* sw;
-	CLI_COMMAND type;
-	CLI_SWITCH requiredSwitches[7];
-	CLI_SWITCH inferredSwitches[4];
+  const char* sw;
+  CLI_COMMAND type;
+  CLI_SWITCH requiredSwitches[7];
+  CLI_SWITCH inferredSwitches[4];
 } CMD_TBL;
 typedef struct {
-	enum PARAM_TYPE : char { NONE, STR, INT, BOOL, FLAG };
-	const char* sw;
-	void* var;
-	CLI_SWITCH swType;
-	PARAM_TYPE cmdType;
+  enum PARAM_TYPE : char { NONE, STR, INT, BOOL, FLAG };
+  const char* sw;
+  void* var;
+  CLI_SWITCH swType;
+  PARAM_TYPE cmdType;
 } PARAM_TBL;
 
 // parse the command line arguments
@@ -92,12 +94,9 @@ typedef struct {
 // param_tbl: the parameter table
 // param_tbl_size: the size of the parameter table
 // returns: CLI_CMD_ERROR.
-int parseCli(int argc, char* argv[],
-	const CMD_TBL*& cmd,
-	const CMD_TBL* cmd_tbl,
-	const int cmd_tbl_size,
-	const PARAM_TBL* param_tbl,
-	const int param_tbl_size);
+int parseCli(int argc, char* argv[], const CMD_TBL*& cmd,
+             const CMD_TBL* cmd_tbl, const int cmd_tbl_size,
+             const PARAM_TBL* param_tbl, const int param_tbl_size);
 
 void setFlag(const CLI_SWITCH sw);
 void clearFlag(const CLI_SWITCH sw);
@@ -110,4 +109,4 @@ bool isFlagClear(const CLI_SWITCH sw);
 // returns: true if any of the flags are set.
 bool isFlagSetAny(const int sw);
 
-#endif // XB_CLI_TBL_H
+#endif  // XB_CLI_TBL_H

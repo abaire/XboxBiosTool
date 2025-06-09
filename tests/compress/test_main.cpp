@@ -5,9 +5,9 @@
 #include <cstdint>
 #include <iomanip>
 #include <iostream>
+#include <random>
 #include <set>
 #include <string>
-#include <random>
 #include <vector>
 
 #include "lzx.h"
@@ -30,16 +30,14 @@ struct Fixture {
       large_simple.push_back(i & 0xFF);
     }
 
-
     constexpr size_t VECTOR_SIZE_BYTES = 128 * 1024;
     constexpr uint32_t SEED = 0x44556677;
 
     large_noise.resize(VECTOR_SIZE_BYTES);
     std::mt19937 engine(SEED);
     std::uniform_int_distribution<uint8_t> distribution;
-    std::generate(large_noise.begin(), large_noise.end(), [&]() {
-      return distribution(engine);
-    });
+    std::generate(large_noise.begin(), large_noise.end(),
+                  [&]() { return distribution(engine); });
   }
 
   std::vector<uint8_t> small_simple;
@@ -186,7 +184,6 @@ BOOST_AUTO_TEST_CASE(large_simple_round_trip) {
   free(decompressed);
   free(compressed);
 }
-
 
 BOOST_AUTO_TEST_CASE(large_noise_round_trip) {
   uint8_t *compressed = nullptr;
