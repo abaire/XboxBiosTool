@@ -14,7 +14,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.If not, see < https://www.gnu.org/licenses/>.
-*/
+ */
 
 // Author: tommojphillips
 // GitHub: https:\\github.com\tommojphillips
@@ -27,16 +27,16 @@
 #define MCPX_BLOCK_SIZE 512
 
 typedef enum {
-	MCPX_REV_UNK,
-	MCPX_REV_0,
-	MCPX_REV_1,
+  MCPX_REV_UNK,
+  MCPX_REV_0,
+  MCPX_REV_1,
 } MCPX_REV;
 
-typedef struct {	
-	uint8_t* data;
-	uint8_t* sbkey;
-	MCPX_REV rev;
-	uint8_t hash[20];
+typedef struct {
+  uint8_t* data;
+  uint8_t* sbkey;
+  MCPX_REV rev;
+  uint8_t hash[20];
 } MCPX;
 
 #ifdef __cplusplus
@@ -51,4 +51,4 @@ int mcpx_load(MCPX* mcpx, uint8_t* data);
 };
 #endif
 
-#endif // !MCPX_ROM_H
+#endif  // !MCPX_ROM_H

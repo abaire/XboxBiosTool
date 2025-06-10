@@ -14,7 +14,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.If not, see < https://www.gnu.org/licenses/>.
-*/
+ */
 
 // Author: tommojphillips
 // GitHub: https:\\github.com\tommojphillips
@@ -25,38 +25,31 @@
 // user incl
 #include "str_util.h"
 
-void ltrim(char** str)
-{
-	if (str == NULL || *str == NULL)
-		return;
+void ltrim(char** str) {
+  if (str == NULL || *str == NULL) return;
 
-	while ((*str)[0] == ' ' || (*str)[0] == '\t' || (*str)[0] == '\n') {
-		(*str)++;
-	}
+  while ((*str)[0] == ' ' || (*str)[0] == '\t' || (*str)[0] == '\n') {
+    (*str)++;
+  }
 }
 
-void rtrim(char** str)
-{
-	if (str == NULL || *str == NULL)
-		return;
+void rtrim(char** str) {
+  if (str == NULL || *str == NULL) return;
 
-	int len = strlen(*str);
-	if (len == 0)
-		return;
+  int len = strlen(*str);
+  if (len == 0) return;
 
-	char* end = *str + len - 1;
-	while (end > *str && (end[0] == ' ' || end[0] == '\t' || end[0] == '\n')) {
-		end--;
-	}
-	*(end + 1) = '\0';
+  char* end = *str + len - 1;
+  while (end > *str && (end[0] == ' ' || end[0] == '\t' || end[0] == '\n')) {
+    end--;
+  }
+  *(end + 1) = '\0';
 }
 
-void rpad(char* str, const int buffSize, const char pad)
-{
-	if (str == NULL)
-		return;
+void rpad(char* str, const int buffSize, const char pad) {
+  if (str == NULL) return;
 
-	int slen = strlen(str);
-	memset(str + slen, pad, buffSize - slen - 1);
-	str[buffSize - 1] = '\0';
+  int slen = strlen(str);
+  memset(str + slen, pad, buffSize - slen - 1);
+  str[buffSize - 1] = '\0';
 }

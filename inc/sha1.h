@@ -1,7 +1,7 @@
 //  sha1.h
 
 // GitHub: https://github.com/XboxDev/xbedump
-// 
+//
 // credit to XboxDev, and the authors of xbedump
 // Michael Steil (mist64)
 // Franz
@@ -21,16 +21,16 @@
 
 // SHA-1 context
 typedef struct _SHA1Context {
-    uint32_t intermediate_hash[SHA1_DIGEST_LEN / 4U]; // Digest
+  uint32_t intermediate_hash[SHA1_DIGEST_LEN / 4U];  // Digest
 
-    uint32_t length_low;    // Message length in bits
-    uint32_t length_high;
+  uint32_t length_low;  // Message length in bits
+  uint32_t length_high;
 
-    short block_index;    // Index into message block array
-    uint8_t block[64];    // 512-bit message blocks
+  short block_index;  // Index into message block array
+  uint8_t block[64];  // 512-bit message blocks
 
-    int computed;       // Is the digest computed?
-    int corrupted;      // Is the message digest corrupted?
+  int computed;   // Is the digest computed?
+  int corrupted;  // Is the message digest corrupted?
 } SHA1Context;
 
 #ifdef __cplusplus
@@ -45,4 +45,4 @@ int SHA1Result(SHA1Context* context, uint8_t digest[SHA1_DIGEST_LEN]);
 };
 #endif
 
-#endif // _SHA1_H_
+#endif  // _SHA1_H_

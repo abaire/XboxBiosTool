@@ -2,7 +2,7 @@
 
 // GitHub: https://github.com/XboxDev/xbedump
 // License: ??
-// 
+//
 // credit to XboxDev, and the authors of xbedump
 // Michael Steil (mist64)
 // Franz
@@ -38,9 +38,10 @@
 
 #include "sha1.h"
 
-#define SHA1CircularShift(bits,word) (((word) << (bits)) | ((word) >> (32-(bits))))
+#define SHA1CircularShift(bits, word) \
+  (((word) << (bits)) | ((word) >> (32 - (bits))))
 
-void SHA1PadMessage(SHA1Context*); 
+void SHA1PadMessage(SHA1Context*);
 void SHA1ProcessMessageBlock(SHA1Context*);
 
 /*
@@ -57,27 +58,25 @@ void SHA1ProcessMessageBlock(SHA1Context*);
  *  Returns:
  *      sha Error Code.
  */
-int SHA1Reset(SHA1Context* context)
-{
-    if (!context)
-    {
-        return SHA_STATUS_STATE_NULL;
-    }
+int SHA1Reset(SHA1Context* context) {
+  if (!context) {
+    return SHA_STATUS_STATE_NULL;
+  }
 
-    context->length_low  = 0;
-    context->length_high = 0;
-    context->block_index = 0;
+  context->length_low = 0;
+  context->length_high = 0;
+  context->block_index = 0;
 
-    context->intermediate_hash[0] = 0x67452301;
-    context->intermediate_hash[1] = 0xEFCDAB89;
-    context->intermediate_hash[2] = 0x98BADCFE;
-    context->intermediate_hash[3] = 0x10325476;
-    context->intermediate_hash[4] = 0xC3D2E1F0;
+  context->intermediate_hash[0] = 0x67452301;
+  context->intermediate_hash[1] = 0xEFCDAB89;
+  context->intermediate_hash[2] = 0x98BADCFE;
+  context->intermediate_hash[3] = 0x10325476;
+  context->intermediate_hash[4] = 0xC3D2E1F0;
 
-    context->computed = 0;
-    context->corrupted = 0;
+  context->computed = 0;
+  context->corrupted = 0;
 
-    return SHA_STATUS_SUCCESS;
+  return SHA_STATUS_SUCCESS;
 }
 
 /*
@@ -98,39 +97,38 @@ int SHA1Reset(SHA1Context* context)
  *  Returns:
  *      sha Error Code.
  */
-int SHA1Result(SHA1Context* context, uint8_t digest[SHA1_DIGEST_LEN])
-{
-    int i;
+int SHA1Result(SHA1Context* context, uint8_t digest[SHA1_DIGEST_LEN]) {
+  int i;
 
-    if (!context || !digest) {
-        return SHA_STATUS_STATE_NULL;
+  if (!context || !digest) {
+    return SHA_STATUS_STATE_NULL;
+  }
+
+  if (context->corrupted) {
+    return context->corrupted;
+  }
+
+  if (!context->computed) {
+    SHA1PadMessage(context);
+    for (i = 0; i < 64; ++i) {
+      context->block[i] = 0;
     }
 
-    if (context->corrupted) {
-        return context->corrupted;
-    }
+    context->length_low = 0;
+    context->length_high = 0;
+    context->computed = 1;
+  }
 
-    if (!context->computed) {
-        SHA1PadMessage(context);
-        for(i=0; i<64; ++i) {
-            context->block[i] = 0;
-        }
+  for (i = 0; i < SHA1_DIGEST_LEN; ++i) {
+    digest[i] =
+        (uint8_t)(context->intermediate_hash[i >> 2] >> 8 * (3 - (i & 0x03)));
+  }
 
-        context->length_low = 0;
-        context->length_high = 0;
-        context->computed = 1;
-
-    }
-
-    for(i = 0; i < SHA1_DIGEST_LEN; ++i) {
-        digest[i] = (uint8_t)(context->intermediate_hash[i >> 2] >> 8 * (3 - (i & 0x03)));
-    }
-
-    return SHA_STATUS_SUCCESS;
+  return SHA_STATUS_SUCCESS;
 }
 
 /*  SHA1Input
- * 
+ *
  *  Description:
  *      This function accepts an array of octets as the next portion
  *      of the message.
@@ -147,47 +145,46 @@ int SHA1Result(SHA1Context* context, uint8_t digest[SHA1_DIGEST_LEN])
  *  Returns:
  *      sha Error Code.
  */
-int SHA1Input(SHA1Context* context, const uint8_t *message, uint32_t len)
-{
-    if (!len) return SHA_STATUS_SUCCESS;
+int SHA1Input(SHA1Context* context, const uint8_t* message, uint32_t len) {
+  if (!len) return SHA_STATUS_SUCCESS;
 
-    if (!context || !message)  return SHA_STATUS_STATE_NULL;
+  if (!context || !message) return SHA_STATUS_STATE_NULL;
 
-    if (context->computed) {
-        context->corrupted = SHA_STATUS_STATE_ERROR;
-        return SHA_STATUS_STATE_ERROR;
+  if (context->computed) {
+    context->corrupted = SHA_STATUS_STATE_ERROR;
+    return SHA_STATUS_STATE_ERROR;
+  }
+
+  if (context->corrupted) return context->corrupted;
+
+  while (len-- && !context->corrupted) {
+    if (context->block_index >= 64) {
+      context->corrupted = SHA_STATUS_INPUT_TOO_LONG;
+      return SHA_STATUS_INPUT_TOO_LONG;
     }
 
-    if (context->corrupted)  return context->corrupted;
-    
-    while(len-- && !context->corrupted) {
-        if (context->block_index >= 64) {
-            context->corrupted = SHA_STATUS_INPUT_TOO_LONG;
-            return SHA_STATUS_INPUT_TOO_LONG;
-        }
+    context->block[context->block_index] = (*message & 0xFF);
 
-    	context->block[context->block_index] = (*message & 0xFF);
+    context->block_index++;
 
-        context->block_index++;
+    context->length_low += 8;
 
-        context->length_low += 8;
-    	
-    	if (context->length_low == 0) {
-        	context->length_high++;
-        	
-        	if (context->length_high == 0) { // Message is too long
-                context->corrupted = SHA_STATUS_INPUT_TOO_LONG;
-        	}
-    	}
+    if (context->length_low == 0) {
+      context->length_high++;
 
-    	if (context->block_index == 64) { // Process the message block
-        	SHA1ProcessMessageBlock(context);
-    	}
-
-    	message++;
+      if (context->length_high == 0) {  // Message is too long
+        context->corrupted = SHA_STATUS_INPUT_TOO_LONG;
+      }
     }
-        
-    return SHA_STATUS_SUCCESS;
+
+    if (context->block_index == 64) {  // Process the message block
+      SHA1ProcessMessageBlock(context);
+    }
+
+    message++;
+  }
+
+  return SHA_STATUS_SUCCESS;
 }
 
 /*  SHA1ProcessMessageBlock
@@ -196,77 +193,77 @@ int SHA1Input(SHA1Context* context, const uint8_t *message, uint32_t len)
  *      This function will process the next 512 bits of the message
  *      stored in the block array.
  */
-void SHA1ProcessMessageBlock(SHA1Context *context)
-{
-    // Constants defined in SHA-1
-    const uint32_t K[] = { 0x5A827999, 0x6ED9EBA1, 0x8F1BBCDC, 0xCA62C1D6 };
+void SHA1ProcessMessageBlock(SHA1Context* context) {
+  // Constants defined in SHA-1
+  const uint32_t K[] = {0x5A827999, 0x6ED9EBA1, 0x8F1BBCDC, 0xCA62C1D6};
 
-    int t;              // Loop counter
-    uint32_t temp;          // Temporary word value
-    uint32_t W[80];         // Word sequence
-    uint32_t A, B, C, D, E; // Word buffers
+  int t;                   // Loop counter
+  uint32_t temp;           // Temporary word value
+  uint32_t W[80];          // Word sequence
+  uint32_t A, B, C, D, E;  // Word buffers
 
-    for(t = 0; t < 16; t++) {
-        W[t] = context->block[t * 4] << 24;
-        W[t] |= context->block[t * 4 + 1] << 16;
-        W[t] |= context->block[t * 4 + 2] << 8;
-        W[t] |= context->block[t * 4 + 3];
-    }
-    
-    for(t = 16; t < 80; t++) {
-       W[t] = SHA1CircularShift(1,W[t-3] ^ W[t-8] ^ W[t-14] ^ W[t-16]);
-    }
+  for (t = 0; t < 16; t++) {
+    W[t] = context->block[t * 4] << 24;
+    W[t] |= context->block[t * 4 + 1] << 16;
+    W[t] |= context->block[t * 4 + 2] << 8;
+    W[t] |= context->block[t * 4 + 3];
+  }
 
-    A = context->intermediate_hash[0];
-    B = context->intermediate_hash[1];
-    C = context->intermediate_hash[2];
-    D = context->intermediate_hash[3];
-    E = context->intermediate_hash[4];
+  for (t = 16; t < 80; t++) {
+    W[t] = SHA1CircularShift(1, W[t - 3] ^ W[t - 8] ^ W[t - 14] ^ W[t - 16]);
+  }
 
-    for(t = 0; t < 20; t++) {
-        temp =  SHA1CircularShift(5,A) + ((B & C) | ((~B) & D)) + E + W[t] + K[0];
-        E = D;
-        D = C;
-        C = SHA1CircularShift(30,B);
+  A = context->intermediate_hash[0];
+  B = context->intermediate_hash[1];
+  C = context->intermediate_hash[2];
+  D = context->intermediate_hash[3];
+  E = context->intermediate_hash[4];
 
-        B = A;
-        A = temp;
-    }
+  for (t = 0; t < 20; t++) {
+    temp = SHA1CircularShift(5, A) + ((B & C) | ((~B) & D)) + E + W[t] + K[0];
+    E = D;
+    D = C;
+    C = SHA1CircularShift(30, B);
 
-    for(t = 20; t < 40; t++) {
-        temp = SHA1CircularShift(5,A) + (B ^ C ^ D) + E + W[t] + K[1];
-        E = D;
-        D = C;
-        C = SHA1CircularShift(30,B);
-        B = A;
-        A = temp;
-    }
+    B = A;
+    A = temp;
+  }
 
-    for(t = 40; t < 60; t++) {
-        temp = SHA1CircularShift(5,A) + ((B & C) | (B & D) | (C & D)) + E + W[t] + K[2];
-        E = D;
-        D = C;
-        C = SHA1CircularShift(30,B);
-        B = A;
-        A = temp;
-    }
+  for (t = 20; t < 40; t++) {
+    temp = SHA1CircularShift(5, A) + (B ^ C ^ D) + E + W[t] + K[1];
+    E = D;
+    D = C;
+    C = SHA1CircularShift(30, B);
+    B = A;
+    A = temp;
+  }
 
-    for(t = 60; t < 80; t++) {
-        temp = SHA1CircularShift(5,A) + (B ^ C ^ D) + E + W[t] + K[3];
-        E = D;
-        D = C;
-        C = SHA1CircularShift(30,B);
-        B = A;
-        A = temp;
-    }
+  for (t = 40; t < 60; t++) {
+    temp = SHA1CircularShift(5, A) + ((B & C) | (B & D) | (C & D)) + E + W[t] +
+           K[2];
+    E = D;
+    D = C;
+    C = SHA1CircularShift(30, B);
+    B = A;
+    A = temp;
+  }
 
-    context->intermediate_hash[0] += A;
-    context->intermediate_hash[1] += B;
-    context->intermediate_hash[2] += C;
-    context->intermediate_hash[3] += D;
-    context->intermediate_hash[4] += E;
-    
-    context->block_index = 0;
+  for (t = 60; t < 80; t++) {
+    temp = SHA1CircularShift(5, A) + (B ^ C ^ D) + E + W[t] + K[3];
+    E = D;
+    D = C;
+    C = SHA1CircularShift(30, B);
+    B = A;
+    A = temp;
+  }
+
+  context->intermediate_hash[0] += A;
+  context->intermediate_hash[1] += B;
+  context->intermediate_hash[2] += C;
+  context->intermediate_hash[3] += D;
+  context->intermediate_hash[4] += E;
+
+  context->block_index = 0;
 }
 
 /*  SHA1PadMessage
@@ -287,41 +284,38 @@ void SHA1ProcessMessageBlock(SHA1Context *context)
  *      ProcessMessageBlock: [in]
  *          The appropriate SHA*ProcessMessageBlock function
  */
-void SHA1PadMessage(SHA1Context *context)
-{
+void SHA1PadMessage(SHA1Context* context) {
   /*Check to see if the current message block is too small to hold
     the initial padding bits and length.  If so, we will pad the
     block, process it, and then continue padding into a second block.*/
 
-    if (context->block_index > 55) {
-        context->block[context->block_index++] = 0x80;
-        while(context->block_index < 64) {
-            context->block[context->block_index++] = 0;
-        }
-
-        SHA1ProcessMessageBlock(context);
-
-        while(context->block_index < 56) {
-            context->block[context->block_index++] = 0;
-        }
-    }
-    else {
-        context->block[context->block_index++] = 0x80;
-        while(context->block_index < 56) {
-
-            context->block[context->block_index++] = 0;
-        }
+  if (context->block_index > 55) {
+    context->block[context->block_index++] = 0x80;
+    while (context->block_index < 64) {
+      context->block[context->block_index++] = 0;
     }
 
-    context->block[56] = (context->length_high >> 24);
-    context->block[57] = (uint8_t)(context->length_high >> 16);
-    context->block[58] = (uint8_t)(context->length_high >> 8);
-    context->block[59] = (uint8_t)(context->length_high);
-
-    context->block[60] = context->length_low >> 24;
-    context->block[61] = (uint8_t)(context->length_low >> 16);
-    context->block[62] = (uint8_t)(context->length_low >> 8);
-    context->block[63] = (uint8_t)(context->length_low);
-      
     SHA1ProcessMessageBlock(context);
-}  
+
+    while (context->block_index < 56) {
+      context->block[context->block_index++] = 0;
+    }
+  } else {
+    context->block[context->block_index++] = 0x80;
+    while (context->block_index < 56) {
+      context->block[context->block_index++] = 0;
+    }
+  }
+
+  context->block[56] = (context->length_high >> 24);
+  context->block[57] = (uint8_t)(context->length_high >> 16);
+  context->block[58] = (uint8_t)(context->length_high >> 8);
+  context->block[59] = (uint8_t)(context->length_high);
+
+  context->block[60] = context->length_low >> 24;
+  context->block[61] = (uint8_t)(context->length_low >> 16);
+  context->block[62] = (uint8_t)(context->length_low >> 8);
+  context->block[63] = (uint8_t)(context->length_low);
+
+  SHA1ProcessMessageBlock(context);
+}

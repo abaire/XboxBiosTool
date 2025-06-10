@@ -14,9 +14,9 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.If not, see < https://www.gnu.org/licenses/>. */
- 
-  // Author: tommojphillips
-  // GitHub: https:\\github.com\tommojphillips
+
+// Author: tommojphillips
+// GitHub: https:\\github.com\tommojphillips
 
 #ifndef MEM_TRACKING_H
 #define MEM_TRACKING_H
@@ -31,11 +31,11 @@ extern long memtrack_allocatedBytes;
 extern "C" {
 #endif
 
-	void* memtrack_malloc(size_t size);
-	void* memtrack_realloc(void* ptr, size_t size);
-	void* memtrack_calloc(size_t count, size_t size);
-	void memtrack_free(void* ptr);
-	int memtrack_report();
+void* memtrack_malloc(size_t size);
+void* memtrack_realloc(void* ptr, size_t size);
+void* memtrack_calloc(size_t count, size_t size);
+void memtrack_free(void* ptr);
+int memtrack_report();
 
 #ifdef __cplusplus
 };
@@ -46,5 +46,5 @@ extern "C" {
 #define realloc(ptr, size) memtrack_realloc(ptr, size)
 #define calloc(count, size) memtrack_calloc(count, size)
 
-#endif // !MEM_TRACKING
-#endif // !MEM_TRACKING_H
+#endif  // !MEM_TRACKING
+#endif  // !MEM_TRACKING_H
