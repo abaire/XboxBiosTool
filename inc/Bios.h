@@ -140,6 +140,7 @@ typedef struct BIOS_BUILD_PARAMS {
   bool hacksignature;
   bool nobootparams;
   bool zero_kernel_key;
+  bool fix2bldigest;
 } BIOS_BUILD_PARAMS;
 
 // Bios
