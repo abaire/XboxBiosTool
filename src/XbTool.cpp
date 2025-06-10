@@ -129,6 +129,7 @@ static const PARAM_TBL param_tbl[] = {
     {"hackinittbl", nullptr, SW_HACK_INITTBL, PARAM_TBL::FLAG},
     {"hacksignature", nullptr, SW_HACK_SIGNATURE, PARAM_TBL::FLAG},
     {"nobootparams", nullptr, SW_UPDATE_BOOT_PARAMS, PARAM_TBL::FLAG},
+    {"fix2bldigest", nullptr, SW_FIX_2BL_DIGEST, PARAM_TBL::FLAG},
     {"help-all", nullptr, SW_HELP_ALL, PARAM_TBL::FLAG},
     {"help-enc", nullptr, SW_HELP_ENCRYPTION, PARAM_TBL::FLAG},
     {"branch", nullptr, SW_BRANCH, PARAM_TBL::FLAG},
@@ -166,6 +167,7 @@ int buildBios() {
   build_params.hackinittbl = isFlagSet(SW_HACK_INITTBL);
   build_params.hacksignature = isFlagSet(SW_HACK_SIGNATURE);
   build_params.nobootparams = isFlagSet(SW_UPDATE_BOOT_PARAMS);
+  build_params.fix2bldigest = isFlagSet(SW_FIX_2BL_DIGEST);
 
   if (params.mcpx_file != nullptr)
     printf("mcpx file:\t\t%s\n", params.mcpx_file);
@@ -1224,24 +1226,18 @@ int help() {
       case CMD_BUILD_BIOS:
         printf(
             "# %s\n\n %s (req)\n %s (req)\n %s (req)\n %s (req)\n %s\n %s\n %s "
-            "%s\n %s %s\n %s\n %s\n %s\n %s\n\n",
+            "%s\n %s %s\n %s\n %s\n %s\n %s\n %s\n\n",
             HELP_STR_BUILD, HELP_STR_PARAM_BLDR, HELP_STR_PARAM_KRNL,
             HELP_STR_PARAM_KRNL_DATA, HELP_STR_PARAM_INITTBL,
             HELP_STR_PARAM_PRELDR, HELP_STR_PARAM_OUT_BIOS_FILE,
             HELP_STR_PARAM_ROMSIZE, HELP_STR_VALID_ROM_SIZES,
             HELP_STR_PARAM_BINSIZE, HELP_STR_VALID_ROM_SIZES,
             HELP_STR_PARAM_BFM, HELP_STR_PARAM_HACK_INITTBL,
-            HELP_STR_PARAM_HACK_SIGNATURE, HELP_STR_PARAM_UPDATE_BOOT_PARAMS);
+            HELP_STR_PARAM_HACK_SIGNATURE, HELP_STR_PARAM_UPDATE_BOOT_PARAMS,
+            HELP_STR_PARAM_FIX_2BL_KERNEL_DIGEST);
         printf(
             "Usage:\nxbios -bld -bldr <path> -krnl <path> -krnldata <path> "
             "-inittbl <path> [switches]\n");
-        return 0;
-
-      case CMD_SPLIT_BIOS:
-        printf("# %s\n\n %s (req) *inferred\n %s %s\n\n", HELP_STR_SPLIT,
-               HELP_STR_PARAM_IN_BIOS_FILE, HELP_STR_PARAM_ROMSIZE,
-               HELP_STR_VALID_ROM_SIZES);
-        printf("Usage: xbios -split <bios_path> [-romsize <size>]\n");
         return 0;
 
       case CMD_COMBINE_BIOS:

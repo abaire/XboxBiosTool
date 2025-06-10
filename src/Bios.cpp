@@ -98,6 +98,43 @@ int Bios::load(uint8_t* buff, const uint32_t binsize,
   return bios_status;
 }
 
+static void calculate2BLDigest(uint8_t* dest, const uint8_t* kernel_key,
+                               const KERNEL& kernel, const INIT_TBL& init_tbl,
+                               const BOOT_PARAMS& boot_params) {
+  SHA1Context sha = {0};
+  SHA1Reset(&sha);
+
+  SHA1Input(&sha, kernel_key, XB_KEY_SIZE);
+  SHA1Input(
+      &sha,
+      reinterpret_cast<const uint8_t*>(&boot_params.compressed_kernel_size), 4);
+
+  const uint32_t FLASH_ADDRESS_OF_2BL = 0xFFFF9E00;
+  uint32_t uncompressed_data_offset =
+      FLASH_ADDRESS_OF_2BL - boot_params.uncompressed_kernel_data_size;
+
+  SHA1Input(&sha, kernel.compressed_kernel_ptr,
+            boot_params.compressed_kernel_size);
+  SHA1Input(&sha,
+            reinterpret_cast<const uint8_t*>(
+                &boot_params.uncompressed_kernel_data_size),
+            4);
+  SHA1Input(&sha, kernel.uncompressed_data_ptr,
+            boot_params.uncompressed_kernel_data_size);
+
+  SHA1Input(&sha, reinterpret_cast<const uint8_t*>(&boot_params.init_tbl_size),
+            4);
+  SHA1Input(&sha, reinterpret_cast<const uint8_t*>(&init_tbl),
+            boot_params.init_tbl_size);
+
+  SHA1Result(&sha, dest);
+
+  SHA1Reset(&sha);
+  SHA1Input(&sha, kernel_key, XB_KEY_SIZE);
+  SHA1Input(&sha, dest, 20);
+  SHA1Result(&sha, dest);
+}
+
 int Bios::build(BIOS_BUILD_PARAMS* build_params, uint32_t binsize,
                 BIOS_LOAD_PARAMS* bios_params) {
   // build a bios from the build parameters
@@ -180,8 +217,8 @@ int Bios::build(BIOS_BUILD_PARAMS* build_params, uint32_t binsize,
   memcpy(kernel.compressed_kernel_ptr, build_params->compressed_kernel,
          build_params->kernel_size);
 
-  // copy in the kernel data section. this is data is used by the kernel, stock
-  // dashboard's, launch data path for launch xbes etc.
+  // copy in the kernel data section. this is data is used by the kernel,
+  // stock dashboard's, launch data path for launch xbes etc.
   memcpy(kernel.uncompressed_data_ptr, build_params->kernel_data,
          build_params->kernel_data_size);
 
@@ -216,6 +253,21 @@ int Bios::build(BIOS_BUILD_PARAMS* build_params, uint32_t binsize,
         printf("Zeroing kernel key\n");
         memset(bldr.keys->kernel_key, 0, XB_KEY_SIZE);
       }
+    }
+  }
+
+  if (!build_params->nobootparams && build_params->fix2bldigest) {
+    const uint8_t* key = params.kernel_key;
+    if (key == NULL) {
+      if (bldr.keys != NULL) {
+        key = bldr.keys->kernel_key;
+      }
+    }
+
+    if (key) {
+      printf("Updating boot loader kernel digest\n");
+      calculate2BLDigest(bldr.boot_params->digest, key, kernel, *init_tbl,
+                         *bldr.boot_params);
     }
   }
 
@@ -722,6 +774,7 @@ void bios_init_build_params(BIOS_BUILD_PARAMS* params) {
   params->hackinittbl = false;
   params->hacksignature = false;
   params->nobootparams = false;
+  params->fix2bldigest = false;
 }
 
 void bios_free_build_params(BIOS_BUILD_PARAMS* params) {

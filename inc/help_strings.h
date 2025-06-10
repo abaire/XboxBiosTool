@@ -115,6 +115,9 @@ const char HELP_STR_PARAM_HACK_INITTBL[] =
     "-hackinittbl     - hack init tbl (size = 0)";
 const char HELP_STR_PARAM_HACK_SIGNATURE[] =
     "-hacksignature   - hack boot signature (signature = 0)";
+const char HELP_STR_PARAM_FIX_2BL_KERNEL_DIGEST[] =
+    "-fix2bldigest    - fix up the 2BL digest used to validate the encrypted "
+    "kernel";
 const char HELP_STR_PARAM_WDIR[] = "-dir             - working directory";
 const char HELP_STR_PARAM_UPDATE_BOOT_PARAMS[] =
     "-nobootparams    - dont update 2BL boot params";
