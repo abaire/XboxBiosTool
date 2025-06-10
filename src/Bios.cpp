@@ -298,8 +298,8 @@ int Bios::build(BIOS_BUILD_PARAMS* build_params, uint32_t binsize,
     memcpy(preldr.data, build_params->preldr, build_params->preldr_size);
   }
 
-  if (size > params.romsize) {
-    if (bios_replicate_data(params.romsize, binsize, data, size) != 0) {
+  if (biossize > params.romsize) {
+    if (bios_replicate_data(params.romsize, binsize, data, biossize) != 0) {
       printf("Error: Failed to replicate the bios\n");
       bios_status = BIOS_LOAD_STATUS_FAILED;
       return bios_status;
@@ -326,10 +326,14 @@ int Bios::init(uint8_t* buff, const uint32_t binsize,
     data = buff;
   }
 
-  size = binsize;
+  biossize = binsize;
 
-  if (params.romsize > size) {
-    params.romsize = size;
+  if (params.romsize > biossize) {
+    printf(
+        "Warning: specified romsize (%lu) is larger than target bios size "
+        "(%lu). Truncating romsize\n",
+        (unsigned long)params.romsize, (unsigned long)biossize);
+    params.romsize = biossize;
   }
 
   bldr.encryption_state = !params.enc_bldr;
@@ -345,7 +349,7 @@ void Bios::getOffsets() {
 
   init_tbl = (INIT_TBL*)(data);
 
-  bldr.data = (data + size - BLDR_BLOCK_SIZE - MCPX_BLOCK_SIZE);
+  bldr.data = (data + params.romsize - BLDR_BLOCK_SIZE - MCPX_BLOCK_SIZE);
   bldr.ldr_params = (BOOT_LDR_PARAM*)(bldr.data);
   bldr.boot_params =
       (BOOT_PARAMS*)(bldr.data + BLDR_BLOCK_SIZE - sizeof(BOOT_PARAMS));
@@ -398,10 +402,12 @@ int Bios::validateBldrBootParams() {
   const uint32_t kernel_data_size =
       bldr.boot_params->uncompressed_kernel_data_size;
   const uint32_t inittbl_size = bldr.boot_params->init_tbl_size;
-  const uint32_t kernel_size_valid = kernel_size >= 0 && kernel_size <= size;
+  const uint32_t kernel_size_valid =
+      kernel_size >= 0 && kernel_size <= biossize;
   const uint32_t kernel_data_size_valid =
-      kernel_data_size >= 0 && kernel_data_size <= size;
-  const uint32_t inittbl_size_valid = inittbl_size >= 0 && inittbl_size <= size;
+      kernel_data_size >= 0 && kernel_data_size <= biossize;
+  const uint32_t inittbl_size_valid =
+      inittbl_size >= 0 && inittbl_size <= biossize;
 
   return (kernel_size_valid && kernel_data_size_valid && inittbl_size_valid)
              ? BIOS_LOAD_STATUS_SUCCESS
@@ -518,7 +524,7 @@ void Bios::preldrValidateAndDecryptBldr() {
 void Bios::preldrSymmetricEncDecBldr(const uint8_t* key, const uint32_t len) {
   // encrypt / decrypt 2bl ( preserve preldr block )
 
-  if (!IN_BOUNDS_BLOCK(bldr.data, BLDR_BLOCK_SIZE, data, size)) {
+  if (!IN_BOUNDS_BLOCK(bldr.data, BLDR_BLOCK_SIZE, data, params.romsize)) {
     printf("Error: De/Encrypting 2BL. 2BL ptr is out of bounds\n");
     return;
   }
@@ -546,7 +552,7 @@ void Bios::preldrSymmetricEncDecBldr(const uint8_t* key, const uint32_t len) {
 void Bios::symmetricEncDecBldr(const uint8_t* key, const uint32_t len) {
   // encrypt / decrypt 2bl
 
-  if (!IN_BOUNDS_BLOCK(bldr.data, BLDR_BLOCK_SIZE, data, size)) {
+  if (!IN_BOUNDS_BLOCK(bldr.data, BLDR_BLOCK_SIZE, data, params.romsize)) {
     printf("Error: De/Encrypting 2BL. 2BL ptr is out of bounds\n");
     return;
   }
@@ -581,7 +587,8 @@ void Bios::symmetricEncDecKernel() {
   }
 
   if (!IN_BOUNDS_BLOCK(kernel.compressed_kernel_ptr,
-                       bldr.boot_params->compressed_kernel_size, data, size)) {
+                       bldr.boot_params->compressed_kernel_size, data,
+                       params.romsize)) {
     printf("Error: De/Encrypting kernel. kernel ptr is out of bounds\n");
     return;
   }
@@ -646,7 +653,7 @@ void Bios::resetValues() {
   bios_init_kernel(&kernel);
 
   data = NULL;
-  size = 0;
+  biossize = 0;
 
   init_tbl = NULL;
   rom_digest = NULL;

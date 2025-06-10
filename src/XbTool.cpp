@@ -242,7 +242,7 @@ int buildBios() {
     if (xcodes == nullptr) {
       result = 1;
     } else {
-      result = inject_xcodes(bios.data, bios.size, xcodes, xcodesSize);
+      result = inject_xcodes(bios.data, bios.biossize, xcodes, xcodesSize);
       free(xcodes);
       xcodes = nullptr;
     }
@@ -253,7 +253,7 @@ int buildBios() {
   } else {
     filename = params.out_file;
     if (filename == nullptr) filename = "bios.bin";
-    result = writeFileF(filename, "bios", bios.data, bios.size);
+    result = writeFileF(filename, "bios", bios.data, bios.biossize);
   }
 
 Cleanup:
@@ -1793,7 +1793,7 @@ void printNv2aInfo(Bios* bios) {
 
 void printDataTblInfo(Bios* bios) {
   if (bios->init_tbl->data_tbl_offset == 0 ||
-      bios->size < bios->init_tbl->data_tbl_offset + sizeof(ROM_DATA_TBL)) {
+      bios->biossize < bios->init_tbl->data_tbl_offset + sizeof(ROM_DATA_TBL)) {
     printf("Error: Rom Data Table not found.\n");
     return;
   }
