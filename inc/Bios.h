@@ -147,7 +147,7 @@ typedef struct BIOS_BUILD_PARAMS {
 class Bios {
  public:
   uint8_t* data;
-  uint32_t size;
+  uint32_t biossize;
   BLDR bldr;
   PRELDR preldr;
   KERNEL kernel;
