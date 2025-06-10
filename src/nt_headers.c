@@ -71,6 +71,7 @@ void print_image_dos_header(IMAGE_DOS_HEADER* dos_header) {
   }
   printf("\n");
 }
+
 void print_krnl_data_section_header(IMAGE_DOS_HEADER* dos_header) {
   DATA_SECTION_HEADER* data_section = (DATA_SECTION_HEADER*)&dos_header->e_res2;
   printf(
@@ -82,6 +83,7 @@ void print_krnl_data_section_header(IMAGE_DOS_HEADER* dos_header) {
       data_section->uninitializedDataSize, data_section->initializedDataSize,
       data_section->rawDataPtr, data_section->virtualAddr);
 }
+
 void print_image_file_header(COFF_FILE_HEADER* file_header, bool basic) {
   char datetime[28] = {0};
   const char* machine_str = {0};
@@ -112,6 +114,7 @@ void print_image_file_header(COFF_FILE_HEADER* file_header, bool basic) {
         file_header->symbolTablePtr, file_header->numSymbols);
   }
 }
+
 void print_image_optional_header(IMAGE_OPTIONAL_HEADER* optional_header,
                                  bool basic) {
   const char* magic_str = NULL;
@@ -170,6 +173,7 @@ void print_image_optional_header(IMAGE_OPTIONAL_HEADER* optional_header,
       optional_header->stackCommitSize, optional_header->heapReserveSize,
       optional_header->heapCommitSize);
 }
+
 void print_nt_headers(IMAGE_NT_HEADER* nt_header, bool basic) {
   print_image_file_header(&nt_header->file_header, basic);
   print_image_optional_header(&nt_header->optional_header, basic);
@@ -212,6 +216,7 @@ IMAGE_DOS_HEADER* verify_dos_header(uint8_t* data, uint32_t size) {
 
   return dosHeader;
 }
+
 IMAGE_NT_HEADER* verify_nt_headers(uint8_t* data, uint32_t size) {
   IMAGE_DOS_HEADER* dos = NULL;
   IMAGE_NT_HEADER* nt = NULL;

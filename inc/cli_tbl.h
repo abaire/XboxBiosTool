@@ -77,8 +77,10 @@ typedef struct {
   CLI_SWITCH requiredSwitches[7];
   CLI_SWITCH inferredSwitches[4];
 } CMD_TBL;
+
 typedef struct {
   enum PARAM_TYPE : char { NONE, STR, INT, BOOL, FLAG };
+
   const char* sw;
   void* var;
   CLI_SWITCH swType;

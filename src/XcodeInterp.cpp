@@ -70,17 +70,20 @@ int XcodeInterp::load(uint8_t* in_data, uint32_t in_size) {
 
   return 0;
 }
+
 void XcodeInterp::reset() {
   offset = 0;
   status = DATA_OK;
   ptr = (XCODE*)data;
 }
+
 void XcodeInterp::unload() {
   if (data != NULL) {
     free(data);
     data = NULL;
   }
 }
+
 int XcodeInterp::interpretNext(XCODE*& xcode) {
   if (data == NULL) {
     status = INTERP_STATUS::DATA_ERROR;
@@ -152,6 +155,7 @@ int encodeX86AsMemWrites(uint8_t* data, uint32_t size, uint32_t base,
 
   return 0;
 }
+
 int getOpcodeStr(const FIELD_MAP* opcodes, uint8_t opcode, const char*& str) {
   for (uint32_t i = 0; i < XC_OPCODE_COUNT; ++i) {
     if (opcodes[i].field == opcode) {

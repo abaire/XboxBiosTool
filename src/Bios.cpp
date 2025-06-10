@@ -97,6 +97,7 @@ int Bios::load(uint8_t* buff, const uint32_t binsize,
   bios_status = BIOS_LOAD_STATUS_SUCCESS;
   return bios_status;
 }
+
 int Bios::build(BIOS_BUILD_PARAMS* build_params, uint32_t binsize,
                 BIOS_LOAD_PARAMS* bios_params) {
   // build a bios from the build parameters
@@ -302,6 +303,7 @@ void Bios::getOffsets() {
   rom_digest =
       (bldr.data + BLDR_BLOCK_SIZE - ROM_DIGEST_SIZE - PRELDR_PARAMS_SIZE);
 }
+
 void Bios::getOffsets2() {
   // calculate the pointers to the 2bl entry and keys. 2BL needs to be
   // unencrypted for this to work.
@@ -366,6 +368,7 @@ void Bios::preldrCreateKey(uint8_t* sbkey, uint8_t* key) {
   SHA1Input(&sha, key, XB_KEY_SIZE);
   SHA1Result(&sha, key);
 }
+
 void Bios::preldrValidateAndDecryptBldr() {
   // validate the preldr and decrypt the 2bl.
 
@@ -487,6 +490,7 @@ void Bios::preldrSymmetricEncDecBldr(const uint8_t* key, const uint32_t len) {
 
   bldr.encryption_state = !bldr.encryption_state;
 }
+
 void Bios::symmetricEncDecBldr(const uint8_t* key, const uint32_t len) {
   // encrypt / decrypt 2bl
 
@@ -503,6 +507,7 @@ void Bios::symmetricEncDecBldr(const uint8_t* key, const uint32_t len) {
 
   bldr.encryption_state = !bldr.encryption_state;
 }
+
 void Bios::symmetricEncDecKernel() {
   // encrypt / decrypt kernel
 
@@ -557,6 +562,7 @@ int Bios::decompressKrnl() {
     return 1;
   return 0;
 }
+
 int Bios::preldrDecryptPublicKey() {
   // decrypt the preldr public key
 
@@ -596,6 +602,7 @@ void Bios::resetValues() {
 
   bios_status = BIOS_LOAD_STATUS_SUCCESS;
 }
+
 void Bios::unload() {
   // unload bios
 
@@ -624,6 +631,7 @@ void bios_print_state(Bios* bios) {
       bios->bldr.boot_params->compressed_kernel_size, BLDR_BLOCK_SIZE,
       bios->bldr.boot_params->init_tbl_size, bios->available_space);
 }
+
 int bios_check_size(const uint32_t size) {
   switch (size) {
     case 0x40000U:
@@ -633,6 +641,7 @@ int bios_check_size(const uint32_t size) {
   }
   return 1;
 }
+
 int bios_replicate_data(uint32_t from, uint32_t to, uint8_t* buffer,
                         uint32_t buffersize) {
   // replicate buffer based on to
@@ -667,6 +676,7 @@ void bios_init_preldr(PRELDR* preldr) {
   preldr->jmp_offset = 0;
   preldr->status = PRELDR_STATUS_ERROR;
 }
+
 void bios_init_bldr(BLDR* bldr) {
   bldr->data = NULL;
   bldr->entry = NULL;
@@ -676,6 +686,7 @@ void bios_init_bldr(BLDR* bldr) {
   bldr->ldr_params = NULL;
   bldr->encryption_state = false;
 }
+
 void bios_init_kernel(KERNEL* kernel) {
   kernel->compressed_kernel_ptr = NULL;
   kernel->uncompressed_data_ptr = NULL;
@@ -683,6 +694,7 @@ void bios_init_kernel(KERNEL* kernel) {
   kernel->img_size = 0;
   kernel->encryption_state = false;
 }
+
 void bios_init_params(BIOS_LOAD_PARAMS* params) {
   params->romsize = 0;
   params->bldr_key = NULL;
@@ -692,6 +704,7 @@ void bios_init_params(BIOS_LOAD_PARAMS* params) {
   params->enc_kernel = false;
   params->restore_boot_params = true;
 }
+
 void bios_init_build_params(BIOS_BUILD_PARAMS* params) {
   params->init_tbl = NULL;
   params->preldr = NULL;
@@ -710,6 +723,7 @@ void bios_init_build_params(BIOS_BUILD_PARAMS* params) {
   params->hacksignature = false;
   params->nobootparams = false;
 }
+
 void bios_free_build_params(BIOS_BUILD_PARAMS* params) {
   if (params->preldr != NULL) {
     free(params->preldr);

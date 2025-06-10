@@ -64,6 +64,7 @@ void mcpx_init(MCPX* mcpx) {
   mcpx->sbkey = NULL;
   memset(mcpx->hash, 0, SHA1_DIGEST_LEN);
 }
+
 void mcpx_free(MCPX* mcpx) {
   if (mcpx->data != NULL) {
     free(mcpx->data);

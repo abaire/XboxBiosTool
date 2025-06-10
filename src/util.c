@@ -47,6 +47,7 @@ void util_setConsoleColor(const int col) {
   console_util_color = col;
   printf("\x1B[%dm", col);
 }
+
 void util_setForegroundColor(const int col) {
   int con_col = col;
 
@@ -56,6 +57,7 @@ void util_setForegroundColor(const int col) {
 
   util_setConsoleColor(con_col);
 }
+
 void util_getTimestampStr(size_t timestamp, char* timestamp_str) {
   if (timestamp_str == NULL) return;
 
@@ -173,6 +175,7 @@ void uprintf(char* data, const size_t size, const char* format, ...) {
 
   bufferPtr[0] = '\0';
 }
+
 void uprintc(const int col, const char* format, ...) {
   util_setForegroundColor(col);
   va_list args;
@@ -192,6 +195,7 @@ void uprinth(const uint8_t* data, const size_t size) {
 
   printf("\n");
 }
+
 void uprinta(const uint8_t* data, const size_t size, const int new_line) {
   // print ascii str
   if (data == NULL || size == 0) return;

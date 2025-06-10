@@ -85,6 +85,7 @@ int writeFile(const char* filename, void* ptr, const uint32_t bytesToWrite) {
 
   return 0;
 }
+
 int writeFileF(const char* filename, const char* tag, void* ptr,
                const uint32_t bytesToWrite) {
   static const char SUCCESS_OUT[] = "Writing %s to %s ( %.2f %s )\n";
@@ -121,6 +122,7 @@ int getFileSize(FILE* file, uint32_t* fileSize) {
   fseek(file, 0, SEEK_SET);
   return 0;
 }
+
 bool fileExists(const char* filename) {
   FILE* file = NULL;
 

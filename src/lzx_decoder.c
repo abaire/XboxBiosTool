@@ -154,6 +154,7 @@ static void init_bitbuf(LZX_DECODER_CONTEXT* context) {
   context->bitcount = 16;
   context->input_curpos += 4;
 }
+
 static void fill_bitbuf(LZX_DECODER_CONTEXT* context, int n) {
   context->bitbuf <<= n;
   context->bitcount -= (char)n;
@@ -209,6 +210,7 @@ static uint32_t get_bits(LZX_DECODER_CONTEXT* context, int n) {
   fill_bitbuf(context, n);
   return value;
 }
+
 static void translate_e8(LZX_DECODER_CONTEXT* context, uint8_t* mem,
                          long bytes) {
   uint32_t end_instr_pos;
@@ -349,6 +351,7 @@ static bool make_table(int nchar, const uint8_t* bitlen, uint8_t tablebits,
 
   return true;
 }
+
 static bool make_table_8bit(uint8_t bitlen[], uint8_t table[]) {
   uint16_t count[17] = {0};
   uint16_t weight[17] = {0};
@@ -457,6 +460,7 @@ static bool read_rep_tree(LZX_DECODER_CONTEXT* context, int num_elements,
 
   return !context->error_condition;
 }
+
 static bool read_main_and_secondary_trees(LZX_DECODER_CONTEXT* context) {
   if (!read_rep_tree(context, 256, context->main_tree_prev_len,
                      context->main_tree_len)) {
@@ -490,6 +494,7 @@ static bool read_main_and_secondary_trees(LZX_DECODER_CONTEXT* context) {
 
   return true;
 }
+
 static bool read_aligned_offset_tree(LZX_DECODER_CONTEXT* context) {
   for (int i = 0; i < 8; i++) {
     context->aligned_len[i] = (uint8_t)get_bits(context, 3);
@@ -600,6 +605,7 @@ static long decode_aligned_block_special(LZX_DECODER_CONTEXT* context, long pos,
 
   return pos;
 }
+
 static long decode_aligned_offset_block_fast(LZX_DECODER_CONTEXT* context,
                                              long pos, int amount_to_decode) {
   long pos_end;
@@ -688,6 +694,7 @@ static long decode_aligned_offset_block_fast(LZX_DECODER_CONTEXT* context,
 
   return decode_residue;
 }
+
 static int decode_aligned_offset_block(LZX_DECODER_CONTEXT* context, long pos,
                                        int amount_to_decode) {
   if (pos < 257) {
@@ -777,6 +784,7 @@ static long decode_verbatim_block_special(LZX_DECODER_CONTEXT* context,
 
   return pos;
 }
+
 static long decode_verbatim_block_fast(LZX_DECODER_CONTEXT* context, long pos,
                                        int amount_to_decode) {
   long pos_end;
@@ -853,6 +861,7 @@ static long decode_verbatim_block_fast(LZX_DECODER_CONTEXT* context, long pos,
 
   return decode_residue;
 }
+
 static int decode_verbatim_block(LZX_DECODER_CONTEXT* context, long pos,
                                  int amount_to_decode) {
   if (pos < 257) {
@@ -1033,6 +1042,7 @@ static long decode_data(LZX_DECODER_CONTEXT* context, int bytes_to_decode) {
 
   return total_decoded;
 }
+
 static bool decode_init(LZX_DECODER_CONTEXT* context) {
   uint32_t pos_start = 4;
 
@@ -1137,6 +1147,7 @@ LZX_DECODER_CONTEXT* lzx_create_decompression() {
 
   return context;
 }
+
 void lzx_destroy_decompression(LZX_DECODER_CONTEXT* context) {
   if (context != NULL) {
     if (context->mem_window != NULL) {

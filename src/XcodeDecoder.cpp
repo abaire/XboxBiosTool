@@ -264,6 +264,7 @@ int XcodeDecoder::load(uint8_t* data, uint32_t size, uint32_t base,
 
   return 0;
 }
+
 int XcodeDecoder::loadSettings(const char* ini,
                                DECODE_SETTINGS* settings) const {
   char* value = NULL;
@@ -512,6 +513,7 @@ Cleanup:
 
   return result;
 }
+
 int XcodeDecoder::decodeXcodes() {
   int result;
 
@@ -534,6 +536,7 @@ int XcodeDecoder::decodeXcodes() {
 
   return 0;
 }
+
 int XcodeDecoder::decode() {
   uint32_t len;
   uint32_t fmt_len;
@@ -751,6 +754,7 @@ int XcodeDecoder::decode() {
 
   return 0;
 }
+
 int XcodeDecoder::getCommentStr(char* str, size_t buf_size) {
   // -1 = dont care about field
 
@@ -971,6 +975,7 @@ static int ll(char* output, char* str, uint32_t i, uint32_t* j, uint32_t len,
 
   return 0;
 }
+
 static int ll2(char* output, char* str, uint32_t i, uint32_t& j, uint32_t len) {
   // output: output buffer
   // str: input string
@@ -1015,6 +1020,7 @@ static int ll2(char* output, char* str, uint32_t i, uint32_t& j, uint32_t len) {
 
   return 0;
 }
+
 static void walkBranch(DECODE_CONTEXT* context, XcodeInterp* interp) {
   // walk the branch and mark jmps as branchable.
 
@@ -1063,6 +1069,7 @@ static void walkBranch(DECODE_CONTEXT* context, XcodeInterp* interp) {
   interp->ptr = ptr;
   interp->status = status;
 }
+
 static int createJmp(DECODE_CONTEXT* context, uint32_t xcodeOffset,
                      XCODE* xcode) {
   // create a jmp; add to jmp count.
@@ -1074,6 +1081,7 @@ static int createJmp(DECODE_CONTEXT* context, uint32_t xcodeOffset,
   context->jmpCount++;
   return 0;
 }
+
 static int searchJmp(DECODE_CONTEXT* context, uint32_t offset,
                      JMP_XCODE** jmp) {
   // search for jmp by xcode offset.
@@ -1090,6 +1098,7 @@ static int searchJmp(DECODE_CONTEXT* context, uint32_t offset,
   *jmp = NULL;
   return 1;
 }
+
 static int createLabel(DECODE_CONTEXT* context, uint32_t offset,
                        const char* label_format) {
   // create a label; add to label count.
@@ -1101,6 +1110,7 @@ static int createLabel(DECODE_CONTEXT* context, uint32_t offset,
   context->labelCount++;
   return 0;
 }
+
 static int searchLabel(DECODE_CONTEXT* context, uint32_t offset,
                        LABEL** label) {
   // search for label by xcode offset.
@@ -1144,12 +1154,14 @@ void initDecodeSettings(DECODE_SETTINGS* settings) {
     settings->opcodes[i].field = 0;
   }
 }
+
 DECODE_SETTINGS* createDecodeSettings() {
   DECODE_SETTINGS* settings = (DECODE_SETTINGS*)malloc(sizeof(DECODE_SETTINGS));
   if (settings == NULL) return NULL;
   initDecodeSettings(settings);
   return settings;
 }
+
 void destroyDecodeSettings(DECODE_SETTINGS* settings) {
   if (settings->format_str != NULL) {
     free(settings->format_str);
@@ -1191,17 +1203,20 @@ void destroyDecodeSettings(DECODE_SETTINGS* settings) {
     }
   }
 }
+
 void initDecodeContext(DECODE_CONTEXT* context) {
   memset(context, 0, sizeof(DECODE_CONTEXT));
   context->branch = false;
   initDecodeSettings(&context->settings);
 }
+
 DECODE_CONTEXT* createDecodeContext() {
   DECODE_CONTEXT* context = (DECODE_CONTEXT*)malloc(sizeof(DECODE_CONTEXT));
   if (context == NULL) return NULL;
   initDecodeContext(context);
   return context;
 }
+
 void destroyDecodeContext(DECODE_CONTEXT* context) {
   if (context != NULL) {
     context->stream = NULL;

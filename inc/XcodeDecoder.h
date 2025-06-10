@@ -36,10 +36,12 @@ typedef enum : uint8_t {
   DECODE_FIELD_DATA,
   DECODE_FIELD_COMMENT
 } DECODE_FIELD;
+
 typedef struct {
   const char* field;
   const char* value;
 } DECODE_SETTING_MAP;
+
 typedef struct {
   DECODE_FIELD type;
   uint32_t seq;
@@ -101,6 +103,7 @@ void destroyDecodeContext(DECODE_CONTEXT* context);
 class XcodeDecoder {
  public:
   XcodeDecoder() { context = NULL; };
+
   ~XcodeDecoder() { destroyDecodeContext(context); };
 
   DECODE_CONTEXT* context;

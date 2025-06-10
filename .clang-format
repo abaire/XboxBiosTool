@@ -2,3 +2,5 @@
 Language:        Cpp
 BasedOnStyle:  Google
 
+SeparateDefinitionBlocks: Always
+EmptyLineBeforeAccessModifier: LogicalBlock

@@ -158,6 +158,7 @@ class Bios {
   BIOS_LOAD_PARAMS params;
 
   Bios() { resetValues(); };
+
   ~Bios() { unload(); };
 
   // unload the bios. reset values and free memory.

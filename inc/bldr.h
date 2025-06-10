@@ -96,11 +96,13 @@ typedef struct {
 
 // xcode structure.
 #pragma pack(push, 1)
+
 typedef struct _XCODE {
   uint8_t opcode;
   uint32_t addr;
   uint32_t data;
 } XCODE;
+
 #pragma pack(pop)
 
 // loader parameters structure.
@@ -133,12 +135,14 @@ typedef struct {
 
 // Preldr parameters structure
 #pragma pack(push, 1)
+
 typedef struct {
   uint8_t jmp_opcode;
   uint32_t jmp_offset;
   uint8_t pad[3];
   uint32_t func_block_ptr;
 } PRELDR_PARAMS;
+
 #pragma pack(pop)
 
 // Preldr pointer block structure

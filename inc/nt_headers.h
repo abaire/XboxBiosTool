@@ -36,6 +36,7 @@ typedef struct {
   uint16_t e_res2[10];
   uint32_t e_lfanew;
 } IMAGE_DOS_HEADER;
+
 typedef struct {
   uint16_t machine;
   uint16_t numSections;
@@ -45,10 +46,12 @@ typedef struct {
   uint16_t sizeOfOptionalHeader;
   uint16_t characteristics;
 } COFF_FILE_HEADER;
+
 typedef struct {
   uint32_t address;
   uint32_t size;
 } IMAGE_DATA_DIRECTORY;
+
 typedef struct {
   uint16_t magic;
   uint8_t majorLinkerVersion;
@@ -60,6 +63,7 @@ typedef struct {
   uint32_t baseOfCode;
   uint32_t baseOfData;
 } IMAGE_OPTIONAL_HEADER_STD_FIELDS;
+
 typedef struct {
   IMAGE_OPTIONAL_HEADER_STD_FIELDS std;
   uint32_t imageBase;
@@ -85,11 +89,13 @@ typedef struct {
   uint32_t numRvaAndSizes;
   IMAGE_DATA_DIRECTORY* dataDirectory;
 } IMAGE_OPTIONAL_HEADER;
+
 typedef struct {
   uint32_t signature;
   COFF_FILE_HEADER file_header;
   IMAGE_OPTIONAL_HEADER optional_header;
 } IMAGE_NT_HEADER;
+
 typedef struct {
   uint8_t name[8];
   uint32_t virtualSize;
@@ -102,6 +108,7 @@ typedef struct {
   uint16_t numLineNumbers;
   uint32_t characteristics;
 } IMAGE_SECTION_HEADER;
+
 typedef struct {
   uint32_t uninitializedDataSize;
   uint32_t initializedDataSize;

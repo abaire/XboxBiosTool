@@ -219,15 +219,19 @@ void setParamValue(const PARAM_TBL* param, char* arg) {
       assert(!"Unsupported command type NONE");
   }
 }
+
 void setFlag(const CLI_SWITCH sw) {
   cli_flags[sw / CLI_SWITCH_BITS] |= (1 << (sw % CLI_SWITCH_BITS));
 }
+
 void clearFlag(const CLI_SWITCH sw) {
   cli_flags[sw / CLI_SWITCH_BITS] &= ~(1 << (sw % CLI_SWITCH_BITS));
 }
+
 bool isFlagSet(const CLI_SWITCH sw) {
   return (cli_flags[sw / CLI_SWITCH_BITS] & (1 << (sw % CLI_SWITCH_BITS))) != 0;
 }
+
 bool isFlagClear(const CLI_SWITCH sw) {
   return (cli_flags[sw / CLI_SWITCH_BITS] & (1 << (sw % CLI_SWITCH_BITS))) == 0;
 }

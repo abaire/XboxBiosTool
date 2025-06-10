@@ -60,6 +60,7 @@ int rsa_verifyPublicKey(uint8_t* data, uint32_t size, uint32_t offset,
 
   return RSA_ERROR_SUCCESS;
 }
+
 int rsa_findPublicKey(uint8_t* data, uint32_t size, PUBLIC_KEY** pubkey,
                       uint32_t* offset) {
   size_t i;

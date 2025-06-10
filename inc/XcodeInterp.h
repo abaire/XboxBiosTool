@@ -95,6 +95,7 @@ class XcodeInterp {
     reset();
     data = NULL;
   };
+
   ~XcodeInterp() { unload(); };
 
   enum INTERP_STATUS : int { DATA_OK = 0, EXIT_OP_FOUND, DATA_ERROR };

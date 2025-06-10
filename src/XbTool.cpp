@@ -260,6 +260,7 @@ Cleanup:
 
   return result;
 }
+
 int extractBios() {
   // Extract components from the bios file.
 
@@ -415,6 +416,7 @@ int extractBios() {
 
   return 0;
 }
+
 int splitBios() {
   int result = 0;
   uint8_t* data = nullptr;
@@ -546,6 +548,7 @@ Cleanup:
 
   return result;
 }
+
 int combineBios() {
   const uint32_t MAX_BANKS = MAX_BIOS_SIZE / MIN_BIOS_SIZE;
   uint32_t totalSize = 0;
@@ -631,6 +634,7 @@ Cleanup:
 
   return result;
 }
+
 int listBios() {
   int result = 0;
   int biosStatus = 0;
@@ -722,6 +726,7 @@ int listBios() {
 
   return result;
 }
+
 int replicateBios() {
   uint32_t size;
   uint8_t* bios = nullptr;
@@ -794,6 +799,7 @@ Cleanup:
 
   return result;
 }
+
 int decodeXcodes() {
   XcodeDecoder decoder;
   DECODE_CONTEXT* context;
@@ -871,6 +877,7 @@ Cleanup:
 
   return result;
 }
+
 int simulateXcodes() {
   XcodeInterp interp;
   XCODE* xcode = nullptr;
@@ -993,6 +1000,7 @@ Cleanup:
 
   return result;
 }
+
 int encodeX86() {
   // encode x86 instructions to xcodes
 
@@ -1042,6 +1050,7 @@ Cleanup:
 
   return 0;
 }
+
 int compressFile() {
   // lzx compress file
 
@@ -1089,6 +1098,7 @@ Cleanup:
 
   return result;
 }
+
 int decompressFile() {
   // lzx decompress file
 
@@ -1139,6 +1149,7 @@ Cleanup:
 
   return result;
 }
+
 int dumpCoffPeImg() {
   int result = 0;
   uint8_t* data = nullptr;
@@ -1158,6 +1169,7 @@ int dumpCoffPeImg() {
 
   return result;
 }
+
 int info() {
   printf(XB_BIOS_TOOL_NAME_STR);
 #ifdef __SANITIZE_ADDRESS__
@@ -1179,6 +1191,7 @@ int info() {
 
   return 0;
 }
+
 int help() {
   if (isFlagSet(SW_HELP_ENCRYPTION)) {
     helpEncryption();
@@ -1340,6 +1353,7 @@ int help() {
 
   return 0;
 }
+
 int helpEncryption() {
   printf(
       "Help\n\n2BL encryption / decryption:\n"
@@ -1368,6 +1382,7 @@ int helpEncryption() {
   printf("\n\n");
   return 0;
 }
+
 int helpAll() {
   int result = 0;
   clearFlag(SW_HELP_ALL);
@@ -1392,6 +1407,7 @@ int helpAll() {
 void init_parameters(XbToolParameters* _params) {
   memset(_params, 0, sizeof(XbToolParameters));
 }
+
 void free_parameters(XbToolParameters* _params) {
   if (_params->bldr_key != nullptr) {
     free(_params->bldr_key);
@@ -1512,6 +1528,7 @@ int read_keys() {
 
   return 0;
 }
+
 int read_mcpx() {
   // read and verify mcpx rom file.
 
@@ -1642,6 +1659,7 @@ void printBldrInfo(Bios* bios) {
   printf(" bytes\n");
   printf("\n");
 }
+
 void printPreldrInfo(Bios* bios) {
   BIOS_LOAD_PARAMS bios_params = bios->params;
 
@@ -1669,6 +1687,7 @@ void printPreldrInfo(Bios* bios) {
 
   printf("\n");
 }
+
 void printInitTblInfo(Bios* bios) {
   INIT_TBL* init_tbl = bios->init_tbl;
   uint16_t kernel_ver = init_tbl->kernel_ver;
@@ -1775,6 +1794,7 @@ void printNv2aInfo(Bios* bios) {
   }
   printf("\n");
 }
+
 void printDataTblInfo(Bios* bios) {
   if (bios->init_tbl->data_tbl_offset == 0 ||
       bios->size < bios->init_tbl->data_tbl_offset + sizeof(ROM_DATA_TBL)) {
@@ -1842,6 +1862,7 @@ void printDataTblInfo(Bios* bios) {
   }
   printf("\n");
 }
+
 void printKeyInfo(Bios* bios) {
   MCPX* mcpx = bios->params.mcpx;
   PUBLIC_KEY* pubkey;
